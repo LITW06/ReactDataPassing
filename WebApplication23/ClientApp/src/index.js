@@ -1,19 +1,35 @@
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
-import './index.css';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import { BrowserRouter } from 'react-router-dom';
-import App from './App';
-import registerServiceWorker from './registerServiceWorker';
+import { render } from 'react-dom';
+import NumberSubmitter from './NumberSubmitter';
+import NumberList from './NumberList';
 
-const baseUrl = document.getElementsByTagName('base')[0].getAttribute('href');
-const rootElement = document.getElementById('root');
+class App extends React.Component {
+    state = {
+        currentNumber: '',
+        allNumbers: []
+    }
 
-ReactDOM.render(
-  <BrowserRouter basename={baseUrl}>
-    <App />
-  </BrowserRouter>,
-  rootElement);
+    onNumberTextChange = e => {
+        this.setState({ currentNumber: e.target.value });
+    }
 
-registerServiceWorker();
+    onSubmitClick = () => {
+        const copy = [...this.state.allNumbers];
+        copy.push(this.state.currentNumber);
+        this.setState({currentNumber: '', allNumbers: copy});
+    }
+
+    render() {
+        return (
+            <div className="container" style={{ marginTop: 40 }}>
+                <NumberSubmitter 
+                currentNumber={this.state.currentNumber}
+                numberTextChange={this.onNumberTextChange}
+                submitClick={this.onSubmitClick} />
+                <NumberList numbers={this.state.allNumbers} />
+            </div>
+        );
+    }
+}
+
+render(<App />, document.getElementById('root'));
